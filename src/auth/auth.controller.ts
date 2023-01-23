@@ -1,4 +1,4 @@
-import { Controller, UseFilters, Body, Req, Post } from '@nestjs/common';
+import { Controller, UseFilters, Body, Req, Post, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
 import { MongoExceptionFilter } from 'src/common/filters/mongo-exeption.filter';
@@ -7,9 +7,13 @@ import { SignUpDto } from './dto/sign-up.dto';
 
 @Controller('api/auth')
 @UseFilters(HttpExceptionFilter, MongoExceptionFilter)
-export class AuthControlle {
+export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Get()
+  findAll(): string {
+    return 'All Users returned';
+  }
   /**
    * Sign up user.
    * @param {SignUpDto} signUpDto

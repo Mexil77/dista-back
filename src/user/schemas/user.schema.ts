@@ -66,9 +66,9 @@ UserSchema.pre('save', async function () {
 
 UserSchema.index({ search: 'text', tags: 'text' });
 
-UserSchema.pre('save', async function () {
-  const { name, lastName, email } = this as User;
-  const search = [name, email];
-  if (lastName) search.push(lastName);
-  this.set('search', search);
-});
+// UserSchema.pre('save', async function () {
+//   const { name, lastName, email } = this as User;
+//   const search = [name, email];
+//   if (lastName) search.push(lastName);
+//   this.set('search', search);
+// });
