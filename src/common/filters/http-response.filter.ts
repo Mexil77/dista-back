@@ -1,7 +1,10 @@
 import { ArgumentsHost, HttpException } from '@nestjs/common';
 import { isArray } from 'lodash';
 
-export const httpResponse = (exception: HttpException, host: ArgumentsHost) => {
+export const httpResponse = (
+  exception: HttpException,
+  host: ArgumentsHost,
+): void => {
   const ctx = host.switchToHttp();
   const res = ctx.getResponse();
   const status = exception.getStatus();
@@ -14,7 +17,7 @@ export const httpResponse = (exception: HttpException, host: ArgumentsHost) => {
     text = message.error;
   } else text = message.message;
 
-  res.status(status).join({
+  res.status(status).json({
     error: {
       message: text,
       code: status,

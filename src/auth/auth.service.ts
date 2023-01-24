@@ -38,8 +38,6 @@ export class AuthService {
   }
 
   async verifyUser(token: AccessTocken): Promise<SignInReturnValue> {
-    console.log(token);
-
     const dbUser = await this.userService.findOneByEmail(token.sub);
     const accessToken = this.createAccessTokenFromUser(dbUser);
     const returnValue: SignInReturnValue = {

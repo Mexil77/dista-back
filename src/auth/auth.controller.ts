@@ -1,7 +1,16 @@
-import { Controller, UseFilters, Body, Req, Post, Get } from '@nestjs/common';
+import {
+  Controller,
+  UseFilters,
+  Body,
+  Req,
+  Post,
+  Get,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { TokenRequirements } from 'src/common/decorators/tocken-requirements.decorator';
 import { Token } from 'src/common/decorators/token.decorator';
+import { TokenGuard } from 'src/common/guards/token.guard';
 import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
 import { MongoExceptionFilter } from 'src/common/filters/mongo-exeption.filter';
 import { User } from 'src/user/interface/user.interface';
@@ -30,6 +39,7 @@ export class AuthController {
   }
   @Post('/verify-email')
   @TokenRequirements([TokenTypeEnums.email])
+  @UseGuards(TokenGuard)
   async verifyUser(@Token() token: AccessTocken): Promise<SignInReturnValue> {
     return await this.authService.verifyUser(token);
   }
