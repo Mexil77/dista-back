@@ -22,7 +22,7 @@ export class UserService {
    * @param signUpDto
    * @param req
    * @return {User}
-   * **/
+   */
   public async signUp(signUpDto: SignUpDto, req: any): Promise<User> {
     const permission: any = ModulesKeyByRole.filter(
       (m) => m.role === UserRoleEnum.user,
@@ -33,8 +33,18 @@ export class UserService {
       permission,
       status: UserStatusEnum.active,
       lenguage: UserLenguageEnum.es,
+      lastLogin: new Date(),
     });
 
     return createdUser.save();
+  }
+
+  /**
+   * Get a single user by email.
+   * @param {string} email - Users email.
+   * @return {User} User returned.
+   */
+  public async findOneByEmail(email: string): Promise<User> {
+    return this.userModel.findOne({ email });
   }
 }

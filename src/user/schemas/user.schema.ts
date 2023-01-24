@@ -35,6 +35,7 @@ export const UserSchema = new Schema(
     password: { type: String, select: false, required: true },
     language: { type: String, enum: UserLenguageEnumAsArray },
     phone: { type: String },
+    lastLogin: { type: Date },
     search: { type: [String] },
   },
   {
@@ -62,13 +63,17 @@ UserSchema.pre('save', async function () {
     const hash = AuthConstants.encryptor.encrypt(password);
     this.set('password', hash);
   }
+  if (email && this.isModified('email')) {
+    this.set('email', email.toLowerCase());
+  }
 });
 
 UserSchema.index({ search: 'text', tags: 'text' });
 
-// UserSchema.pre('save', async function () {
-//   const { name, lastName, email } = this as User;
-//   const search = [name, email];
-//   if (lastName) search.push(lastName);
-//   this.set('search', search);
-// });
+UserSchema.pre('save', async function () {
+  const { name, lastName, email } = this;
+  const search = [email];
+  if (name) search.push(name);
+  if (lastName) search.push(lastName);
+  this.set('search', search);
+});

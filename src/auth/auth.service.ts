@@ -8,6 +8,7 @@ import { User } from 'src/user/interface/user.interface';
 import { UserService } from 'src/user/user.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
+import { SignInReturnValue } from './dto/interface/signin-returnvalue.interface';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +35,27 @@ export class AuthService {
     );
     console.log(accessToken);
     return dbUser;
+  }
+
+  async verifyUser(token: AccessTocken): Promise<SignInReturnValue> {
+    const dbUser = await this.userService.findOneByEmail(token.sub);
+    const accessToken = this.createAccessTokenFromUser(dbUser);
+    const returnValue: SignInReturnValue = {
+      accessToken,
+      user: dbUser,
+    };
+    return returnValue;
+  }
+
+  /* Create Tockens Methods */
+
+  public createAccessTokenFromUser(user: User): string {
+    const payload: AccessTocken = {
+      uid: user._id,
+      type: TokenTypeEnums.user,
+      sub: user.email,
+    };
+    return this.jwtService.sign(payload, { expiresIn: '1y' });
   }
 
   public createAccessTokenFromUserEmail(
