@@ -19,7 +19,7 @@ export const ModulesKeyByRole = [
           PermissionOprionsEnum.view,
           PermissionOprionsEnum.create,
           PermissionOprionsEnum.delete,
-          PermissionOprionsEnum.delete,
+          PermissionOprionsEnum.edit,
         ],
       },
       {
@@ -28,7 +28,7 @@ export const ModulesKeyByRole = [
           PermissionOprionsEnum.view,
           PermissionOprionsEnum.create,
           PermissionOprionsEnum.delete,
-          PermissionOprionsEnum.delete,
+          PermissionOprionsEnum.edit,
         ],
       },
       {
@@ -37,7 +37,7 @@ export const ModulesKeyByRole = [
           PermissionOprionsEnum.view,
           PermissionOprionsEnum.create,
           PermissionOprionsEnum.delete,
-          PermissionOprionsEnum.delete,
+          PermissionOprionsEnum.edit,
         ],
       },
     ],
@@ -51,7 +51,7 @@ export const ModulesKeyByRole = [
           PermissionOprionsEnum.view,
           PermissionOprionsEnum.create,
           PermissionOprionsEnum.delete,
-          PermissionOprionsEnum.delete,
+          PermissionOprionsEnum.edit,
         ],
       },
       {
@@ -60,7 +60,7 @@ export const ModulesKeyByRole = [
           PermissionOprionsEnum.view,
           PermissionOprionsEnum.create,
           PermissionOprionsEnum.delete,
-          PermissionOprionsEnum.delete,
+          PermissionOprionsEnum.edit,
         ],
       },
       {
@@ -69,7 +69,7 @@ export const ModulesKeyByRole = [
           PermissionOprionsEnum.view,
           PermissionOprionsEnum.create,
           PermissionOprionsEnum.delete,
-          PermissionOprionsEnum.delete,
+          PermissionOprionsEnum.edit,
         ],
       },
     ],
