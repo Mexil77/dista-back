@@ -17,7 +17,7 @@ import { User } from 'src/user/interface/user.interface';
 import { SignUpDto } from './dto/sign-up.dto';
 import { TokenTypeEnums } from 'src/token/enums/token-type.enums';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
-import { SignInReturnValue } from './dto/interface/signin-returnvalue.interface';
+import { SignInReturnValue } from './interface/signin-returnvalue.interface';
 
 @Controller('api/auth')
 @UseFilters(HttpExceptionFilter, MongoExceptionFilter)

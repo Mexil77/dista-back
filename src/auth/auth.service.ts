@@ -8,7 +8,7 @@ import { User } from 'src/user/interface/user.interface';
 import { UserService } from 'src/user/user.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
-import { SignInReturnValue } from './dto/interface/signin-returnvalue.interface';
+import { SignInReturnValue } from './interface/signin-returnvalue.interface';
 
 @Injectable()
 export class AuthService {
