@@ -8,6 +8,7 @@ import { UserLenguageEnum } from './enums/user-lenguage.enum';
 import { ModulesKeyByRole } from './enums/modules-key.enum';
 import { UserStatusEnum } from './enums/user-status.enum';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
+import { AuthConstants } from 'src/common/constants/auth.constatns';
 
 @Injectable()
 export class UserService {
@@ -45,6 +46,13 @@ export class UserService {
    * @return {User} User returned.
    */
   public async findOneByEmail(email: string): Promise<User> {
-    return this.userModel.findOne({ email });
+    return this.userModel.findOne({ email }, ['+password']);
+  }
+
+  public async validateCredentials(
+    user: User,
+    password: string,
+  ): Promise<boolean> {
+    return (await AuthConstants.encryptor.decrypt(user.password)) === password;
   }
 }

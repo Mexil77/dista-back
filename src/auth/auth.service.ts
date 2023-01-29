@@ -1,4 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common/exceptions';
 import { JwtService } from '@nestjs/jwt';
 import * as jwt from 'jsonwebtoken';
 import { TokenTypeEnums } from 'src/token/enums/token-type.enums';
@@ -35,6 +39,41 @@ export class AuthService {
     );
     console.log(accessToken);
     return dbUser;
+  }
+
+  /**
+   * Sign up user.
+   * @param {SignInDto} signInDto
+   * @return {Promise<SignInReturnValue>}
+   **/
+  public async signIn(signInDto: SignInDto): Promise<SignInReturnValue> {
+    const dbUser = await this.userService.findOneByEmail(signInDto.email);
+
+    if (!dbUser) {
+      throw new NotFoundException({
+        message: 'User not found',
+      });
+    }
+    const passwordMatch = await this.userService.validateCredentials(
+      dbUser,
+      signInDto.password,
+    );
+    if (!passwordMatch) {
+      await new UnauthorizedException({
+        message: 'Invalid Password',
+      });
+    }
+
+    const accessToken = this.createAccessTokenFromUser(dbUser);
+
+    dbUser.set({ lastLogin: new Date() });
+    dbUser.save();
+
+    const returnValue: SignInReturnValue = {
+      accessToken,
+      user: dbUser,
+    };
+    return returnValue;
   }
 
   async verifyUser(token: AccessTocken): Promise<SignInReturnValue> {

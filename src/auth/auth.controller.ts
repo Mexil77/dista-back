@@ -18,6 +18,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { TokenTypeEnums } from 'src/token/enums/token-type.enums';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { SignInReturnValue } from './interface/signin-returnvalue.interface';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Controller('api/auth')
 @UseFilters(HttpExceptionFilter, MongoExceptionFilter)
@@ -37,6 +38,17 @@ export class AuthController {
   async signUp(@Body() SignUpDto: SignUpDto, @Req() request): Promise<User> {
     return await this.authService.signUp(SignUpDto, request);
   }
+
+  /**
+   * Sign in user via email
+   * @param {SignInDto} SignInDto SignInDto object type
+   * @return {Promise<SignInReturnValue>} A promise resolving in the sign in retrn value
+   */
+  @Post('signin')
+  async signIn(@Body() signInDto: SignInDto): Promise<SignInReturnValue> {
+    return await this.authService.signIn(signInDto);
+  }
+
   @Post('/verify-email')
   @TokenRequirements([TokenTypeEnums.email])
   @UseGuards(TokenGuard)
