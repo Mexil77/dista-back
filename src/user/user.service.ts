@@ -33,7 +33,7 @@ export class UserService {
       ...signUpDto,
       permission,
       status: UserStatusEnum.active,
-      lenguage: UserLenguageEnum.es,
+      language: UserLenguageEnum.es,
       lastLogin: new Date(),
     });
 

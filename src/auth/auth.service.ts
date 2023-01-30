@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   NotFoundException,
   UnauthorizedException,
-} from '@nestjs/common/exceptions';
+  BadRequestException,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as jwt from 'jsonwebtoken';
 import { TokenTypeEnums } from 'src/token/enums/token-type.enums';
@@ -13,6 +14,7 @@ import { UserService } from 'src/user/user.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInReturnValue } from './interface/signin-returnvalue.interface';
+import { SignUpReturnValue } from './interface/signup-returnvalue.interface';
 
 @Injectable()
 export class AuthService {
@@ -26,19 +28,26 @@ export class AuthService {
    * @param {SignUpDto} signUpDto
    * @return {Promise<SignUpReturnValue>}
    **/
-  public async signUp(signUpDto: SignUpDto, req: Request): Promise<User> {
-    //Stepts Omited:
-    //-Find User in Db to avoid duplicate.
-    //-Trow a BadRequest
+  public async signUp(
+    signUpDto: SignUpDto,
+    req: Request,
+  ): Promise<SignUpReturnValue> {
+    const userExits = await this.userService.findOneByEmail(signUpDto.email);
+
+    if (userExits) {
+      throw new BadRequestException({ message: 'User exist' });
+    }
 
     const dbUser = await this.userService.signUp(signUpDto, req);
-    const accessToken = this.createAccessTokenFromUserEmail(
-      dbUser,
-      TokenTypeEnums.email,
-      '24h',
-    );
-    console.log(accessToken);
-    return dbUser;
+
+    const accessToken = this.createAccessTokenFromUser(dbUser);
+
+    const returnValue: SignUpReturnValue = {
+      accessToken,
+      user: dbUser,
+    };
+
+    return returnValue;
   }
 
   /**
@@ -59,7 +68,7 @@ export class AuthService {
       signInDto.password,
     );
     if (!passwordMatch) {
-      await new UnauthorizedException({
+      throw new UnauthorizedException({
         message: 'Invalid Password',
       });
     }

@@ -17,6 +17,7 @@ import { User } from 'src/user/interface/user.interface';
 import { SignUpDto } from './dto/sign-up.dto';
 import { TokenTypeEnums } from 'src/token/enums/token-type.enums';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
+import { SignUpReturnValue } from './interface/signup-returnvalue.interface';
 import { SignInReturnValue } from './interface/signin-returnvalue.interface';
 import { SignInDto } from './dto/sign-in.dto';
 
@@ -35,7 +36,10 @@ export class AuthController {
    * @return {Promise<SignUpReturnValue>}
    **/
   @Post('signup')
-  async signUp(@Body() SignUpDto: SignUpDto, @Req() request): Promise<User> {
+  async signUp(
+    @Body() SignUpDto: SignUpDto,
+    @Req() request,
+  ): Promise<SignUpReturnValue> {
     return await this.authService.signUp(SignUpDto, request);
   }
 
