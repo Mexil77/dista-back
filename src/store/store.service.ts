@@ -1,6 +1,7 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { PaginateModel, PaginateOptions } from 'mongoose-paginate';
 import { Store } from './interface/store.interface';
+import { CreateStoreDto } from './dto/create-store.dto';
 
 @Injectable()
 export class StoreService {
@@ -19,5 +20,34 @@ export class StoreService {
     const searchQuery = { name: query.name };
     const stores = await this.storeModel.paginate({ ...searchQuery }, options);
     return stores;
+  }
+
+  public async createStore(createStoreDto: CreateStoreDto): Promise<Store> {
+    const dbStore = await this.storeModel.findOne({
+      name: createStoreDto.name,
+      user: createStoreDto.user,
+    });
+
+    if (dbStore)
+      throw new BadRequestException({ message: 'Store already exist' });
+    const newStore = this.storeModel(createStoreDto);
+    return await newStore.save();
+  }
+
+  public async updateStore(storeId: string, params: any): Promise<Store> {
+    const dbStore = await this.storeModel.findById(storeId);
+    if (!dbStore)
+      throw new BadRequestException({ message: 'Store doesnt exist' });
+    if (params.products) {
+      dbStore.products = dbStore.products.concat(params.products);
+    }
+
+    return await dbStore.save();
+  }
+
+  public async findStore(params): Promise<Store> {
+    const dbStore = await this.storeModel.findOne(params);
+    if (!dbStore) throw new BadRequestException({ message: 'Store not Found' });
+    return dbStore;
   }
 }

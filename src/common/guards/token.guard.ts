@@ -30,7 +30,6 @@ export class TokenGuard extends AuthGuard('jwt') {
       (req.headers.authorization as string).split(' ')[0] === 'Dragon'
     ) {
       const token = (req.headers.authorization as string).split(' ')[1];
-      console.log(token);
 
       let decodeToken;
       try {

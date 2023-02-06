@@ -15,10 +15,15 @@ export class CreateProductDto {
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
+  readonly user: string;
+
+  @ApiProperty()
+  @IsString()
   @IsOptional()
-  readonly store: string;
+  readonly store?: string;
 
   @ApiProperty()
   @IsOptional()
-  readonly photo: PhotoProductDto;
+  readonly photo?: PhotoProductDto;
 }

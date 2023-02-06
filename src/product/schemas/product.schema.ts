@@ -12,6 +12,7 @@ export const ProductSchema = new Schema(
   {
     name: { type: String },
     price: { type: Number },
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
     store: { type: Schema.Types.ObjectId, ref: 'Store' },
     photo: PhotoSchema,
   },

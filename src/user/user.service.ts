@@ -49,6 +49,10 @@ export class UserService {
     return this.userModel.findOne({ email }, ['+password']);
   }
 
+  public async findById(userID: string): Promise<User> {
+    return this.userModel.findById(userID);
+  }
+
   public async validateCredentials(
     user: User,
     password: string,
