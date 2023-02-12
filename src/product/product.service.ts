@@ -25,14 +25,17 @@ export class ProductService {
   ): Promise<PaginateModel<Product>> {
     const dbUser = await this.userService.findById(token.uid);
     if (!dbUser) throw new BadRequestException({ message: 'User Not Exist' });
-    const { query } = request;
     const options: PaginateOptions = {
       limit: 100,
       page: 1,
       sort: { createdAt: -1 },
       populate: [{ path: 'store' }],
     };
+
+    const { query } = request;
     const searchQuery = { user: dbUser._id };
+    if (query.store) searchQuery['store'] = query.store;
+
     const products = await this.productModel.paginate(
       { ...searchQuery },
       options,
