@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { StoreModule } from './store/store.module';
 import { FormModule } from './form/form.module';
+import { ListModule } from './list/list.module';
 
 @Module({
-  imports: [AuthModule, ProductModule, StoreModule, FormModule],
+  imports: [AuthModule, ProductModule, StoreModule, FormModule, ListModule],
   controllers: [AppController, UserController],
   providers: [AppService],
 })
