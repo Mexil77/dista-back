@@ -14,6 +14,21 @@ export class CreateProductDto {
   readonly price: number;
 
   @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  readonly units: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  readonly typeUnit: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  readonly description: string;
+
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   readonly user: string;

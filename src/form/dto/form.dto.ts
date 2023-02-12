@@ -21,4 +21,16 @@ export class FormDto {
   @ApiProperty()
   @IsNumber()
   readonly productValue: number;
+
+  @ApiProperty()
+  @IsNumber()
+  readonly productUnits: number;
+
+  @ApiProperty()
+  @IsString()
+  readonly productTypeUnit: string;
+
+  @ApiProperty()
+  @IsString()
+  readonly productDescription: string;
 }

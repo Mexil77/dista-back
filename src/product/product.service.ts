@@ -30,6 +30,7 @@ export class ProductService {
       limit: 100,
       page: 1,
       sort: { createdAt: -1 },
+      populate: [{ path: 'store' }],
     };
     const searchQuery = { user: dbUser._id };
     const products = await this.productModel.paginate(

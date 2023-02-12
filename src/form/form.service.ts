@@ -40,6 +40,9 @@ export class FormService {
       const newProduct = await this.productService.createProduct({
         name: body.productName,
         price: body.productValue,
+        units: body.productUnits,
+        typeUnit: body.productTypeUnit,
+        description: body.productDescription,
         user: dbUser._id,
         store: currentStore._id,
       });
