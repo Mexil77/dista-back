@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 export const ListSchema = new Schema(
   {
     name: { type: String },
-    products: { type: Schema.Types.ObjectId, ref: 'Product' },
+    products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
     user: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   {
