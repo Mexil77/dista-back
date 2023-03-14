@@ -4,8 +4,11 @@ import {
   UseFilters,
   Get,
   Post,
+  Put,
+  Delete,
   Body,
   Req,
+  Param,
 } from '@nestjs/common';
 import { TokenRequirements } from 'src/common/decorators/tocken-requirements.decorator';
 import { Token } from 'src/common/decorators/token.decorator';
@@ -41,5 +44,25 @@ export class ListController {
     @Token() token: AccessTocken,
   ): Promise<any> {
     return await this.listService.saveModalAddList(listDto, token);
+  }
+
+  @Post('/edit-list')
+  @TokenRequirements([TokenTypeEnums.user])
+  @UseGuards(TokenGuard)
+  public async saveModalEditList(
+    @Body() listDto: ListDto,
+    @Token() token: AccessTocken,
+  ): Promise<any> {
+    return await this.listService.saveModalEditList(listDto, token);
+  }
+
+  @Delete('/:id')
+  @TokenRequirements([TokenTypeEnums.user])
+  @UseGuards(TokenGuard)
+  public async deleteList(
+    @Param() param,
+    @Token() token: AccessTocken,
+  ): Promise<any> {
+    return await this.listService.deleteList(param, token);
   }
 }

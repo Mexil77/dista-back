@@ -31,14 +31,14 @@ export class ListService {
       limit: 100,
       page: 1,
       sort: { createdAt: -1 },
-      //populate: [],
+      populate: [{ path: 'products' }],
     };
 
     const { query } = request;
     const searchQuery = { user: dbUser._id };
 
-    const products = await this.listModel.paginate({ ...searchQuery }, options);
-    return products;
+    const lists = await this.listModel.paginate({ ...searchQuery }, options);
+    return lists;
   }
 
   public async saveModalAddList(body: ListDto, token: AccessTocken) {
@@ -55,6 +55,20 @@ export class ListService {
         products: [body.listProduct],
       });
     }
+  }
+
+  public async saveModalEditList(body: ListDto, token: AccessTocken) {
+    const dbUser = await this.userService.findById(token.uid);
+    if (!dbUser) throw new BadRequestException({ message: 'User not Exist' });
+    await this.updateList(body.listId, {
+      name: body.listName,
+    });
+  }
+
+  public async deleteList(param: any, token: AccessTocken) {
+    const dbUser = await this.userService.findById(token.uid);
+    if (!dbUser) throw new BadRequestException({ message: 'User not Exist' });
+    await this.listModel.findByIdAndDelete(param.id);
   }
 
   public async createList(createListDto: CreateListDto): Promise<List> {
@@ -77,6 +91,7 @@ export class ListService {
         throw new BadRequestException({ message: 'List has this product' });
       dbList.products = dbList.products.concat(params.products);
     }
+    if (params.name) dbList.name = params.name;
     return await dbList.save();
   }
 }
