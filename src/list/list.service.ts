@@ -71,6 +71,16 @@ export class ListService {
     await this.listModel.findByIdAndDelete(param.id);
   }
 
+  public async deleteProductList(param: any, token: AccessTocken) {
+    const dbUser = await this.userService.findById(token.uid);
+    if (!dbUser) throw new BadRequestException({ message: 'User not Exist' });
+    const list = await this.listModel.findById(param.listId);
+    list.products = list.products.filter(
+      (product) => product.toString() !== param.productId,
+    );
+    return await list.save();
+  }
+
   public async createList(createListDto: CreateListDto): Promise<List> {
     const dbList = await this.listModel.findOne({
       name: createListDto.name,
