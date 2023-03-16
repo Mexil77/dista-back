@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { Product } from 'src/product/interface/product.interface';
 
 export class CreateListDto {
   @ApiProperty()
@@ -10,7 +11,7 @@ export class CreateListDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  readonly products?: string[];
+  readonly products?: Product[];
 
   @ApiProperty()
   @IsString()

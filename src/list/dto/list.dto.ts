@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsBoolean } from 'class-validator';
+import { IsString, IsBoolean } from 'class-validator';
+import { Product } from 'src/product/interface/product.interface';
 
 export class ListDto {
   @ApiProperty()
@@ -16,5 +17,5 @@ export class ListDto {
 
   @ApiProperty()
   @IsString()
-  readonly listProduct: string;
+  readonly listProduct: Product;
 }

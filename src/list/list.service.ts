@@ -8,6 +8,8 @@ import { PaginateModel, PaginateOptions } from 'mongoose-paginate';
 import { List } from './interface/list.interface';
 // import { CreateListDto } from './dto/create-list.dto';
 import { ListDto } from './dto/list.dto';
+import { Store } from 'src/store/interface/store.interface';
+import { Product } from 'src/product/interface/product.interface';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { UserService } from 'src/user/user.service';
 import { CreateListDto } from './dto/create-list.dto';
@@ -31,7 +33,7 @@ export class ListService {
       limit: 100,
       page: 1,
       sort: { createdAt: -1 },
-      populate: [{ path: 'products' }],
+      populate: [{ path: 'products' }, { path: 'storeTotals.store' }],
     };
 
     const { query } = request;
@@ -88,20 +90,82 @@ export class ListService {
     });
     if (dbList)
       throw new BadRequestException({ message: 'List already exist' });
-    const newList = this.listModel(createListDto);
+    const totalList = createListDto.products.reduce(
+      (sum, current) => sum + current.price,
+      0,
+    );
+    const stores = this.spareStoresArray([], createListDto.products);
+    stores.map((store) => {
+      store.total = this.totalStoreProductList(
+        store.store,
+        createListDto.products,
+      );
+    });
+
+    const newList = this.listModel({
+      ...createListDto,
+      storeTotals: stores,
+      total: totalList,
+    });
     return await newList.save();
   }
 
-  public async updateList(listId: string, params: any): Promise<List> {
+  public async updateList(listId: string, params: any) {
     const dbList = await this.listModel.findById(listId);
     if (!dbList)
       throw new BadRequestException({ message: 'List doesnt exist' });
     if (params.products) {
-      if (dbList.products.includes(params.products[0]))
+      if (dbList.products.includes(params.products[0]._id))
         throw new BadRequestException({ message: 'List has this product' });
-      dbList.products = dbList.products.concat(params.products);
+      dbList.products = dbList.products.concat(
+        params.products.map((product) => product._id),
+      );
+      dbList.total += params.products.reduce(
+        (sum, product) => sum + product.price,
+        0,
+      );
+      dbList.total = Number.parseFloat(dbList.total.toFixed(2));
+      dbList.storeTotals.map((store) => {
+        store.total += this.totalStoreProductList(
+          store.store.toString(),
+          params.products,
+        );
+        store.total = Number.parseFloat(store.total.toFixed(2));
+      });
+      const newStoresList = this.spareStoresArray(
+        dbList.storeTotals.map((store) => store.store.toString()),
+        params.products,
+      );
+      newStoresList.map((store) => {
+        store.total += this.totalStoreProductList(store.store, params.products);
+        store.total = Number.parseFloat(store.total.toFixed(2));
+      });
+      dbList.storeTotals = dbList.storeTotals.concat(newStoresList);
     }
     if (params.name) dbList.name = params.name;
     return await dbList.save();
+  }
+
+  public totalStoreProductList(storeId: string, products: Product[]): Number {
+    return products.reduce(
+      (sum, product) =>
+        storeId === product.store._id ? sum + product.price : sum + 0,
+      0,
+    );
+  }
+
+  public spareStoresArray(stores: string[], products: Product[]): any {
+    const unicStoresArray = products.reduce((stores, product) => {
+      if (!stores.some((store) => store._id === product.store._id)) {
+        stores.push({ store: product.store._id, total: 0 });
+      }
+      return stores;
+    }, []);
+    for (let i = 0; i < unicStoresArray.length; i++) {
+      if (stores.includes(unicStoresArray[i].store)) {
+        unicStoresArray.splice(i, 1);
+      }
+    }
+    return unicStoresArray;
   }
 }
