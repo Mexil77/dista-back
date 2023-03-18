@@ -12,6 +12,7 @@ import { Store } from 'src/store/interface/store.interface';
 import { Product } from 'src/product/interface/product.interface';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { UserService } from 'src/user/user.service';
+import { ProductService } from 'src/product/product.service';
 import { CreateListDto } from './dto/create-list.dto';
 
 @Injectable()
@@ -21,6 +22,8 @@ export class ListService {
     public readonly listModel: PaginateModel<List>,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
+    @Inject(forwardRef(() => ProductService))
+    private readonly productService: ProductService,
   ) {}
 
   public async getAll(
@@ -76,9 +79,24 @@ export class ListService {
   public async deleteProductList(param: any, token: AccessTocken) {
     const dbUser = await this.userService.findById(token.uid);
     if (!dbUser) throw new BadRequestException({ message: 'User not Exist' });
-    const list = await this.listModel.findById(param.listId);
+    const productToDelete =
+      await this.productService.getCompletePopulatedProductById(
+        param.productId,
+      );
+    const list = await this.getCompletePopulatedListById(param.listId);
+    list.storeTotals.map((storeTotal) => {
+      if (storeTotal.store.id === productToDelete.store.id) {
+        storeTotal.total -= productToDelete.price;
+        storeTotal.total = Number.parseFloat(storeTotal.total.toFixed(2));
+      }
+    });
+    list.storeTotals = list.storeTotals.filter(
+      (storeTotal) => storeTotal.total > 0,
+    );
+    list.total -= productToDelete.price;
+    list.total = Number.parseFloat(list.total.toFixed(2));
     list.products = list.products.filter(
-      (product) => product.toString() !== param.productId,
+      (product) => product.id !== productToDelete.id,
     );
     return await list.save();
   }
@@ -167,5 +185,15 @@ export class ListService {
       }
     }
     return unicStoresArray;
+  }
+
+  public async getCompletePopulatedListById(listId: string): Promise<List> {
+    return await this.listModel
+      .findById(listId)
+      .populate([
+        { path: 'user' },
+        { path: 'products' },
+        { path: 'storeTotals.store' },
+      ]);
   }
 }

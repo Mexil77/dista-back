@@ -56,4 +56,12 @@ export class ProductService {
     const newProduct = this.productModel(createProductDto);
     return await newProduct.save();
   }
+
+  public async getCompletePopulatedProductById(
+    productId: string,
+  ): Promise<Product> {
+    return this.productModel
+      .findById(productId)
+      .populate([{ path: 'user' }, { path: 'store' }]);
+  }
 }
