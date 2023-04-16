@@ -6,14 +6,13 @@ import {
 } from '@nestjs/common';
 import { PaginateModel, PaginateOptions } from 'mongoose-paginate';
 import { List } from './interface/list.interface';
-// import { CreateListDto } from './dto/create-list.dto';
 import { ListDto } from './dto/list.dto';
-import { Store } from 'src/store/interface/store.interface';
 import { Product } from 'src/product/interface/product.interface';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { UserService } from 'src/user/user.service';
 import { ProductService } from 'src/product/product.service';
 import { CreateListDto } from './dto/create-list.dto';
+import { formatDate } from 'src/common/utils/date';
 
 @Injectable()
 export class ListService {
@@ -40,10 +39,21 @@ export class ListService {
     };
 
     const { query } = request;
-    const searchQuery = { user: dbUser._id };
+    const searchQuery = { user: dbUser._id, kind: 'wish' };
 
     const lists = await this.listModel.paginate({ ...searchQuery }, options);
     return lists;
+  }
+
+  public async saveBuy(body: CreateListDto, token: AccessTocken) {
+    const dbUser = await this.userService.findById(token.uid);
+    if (!dbUser) throw new BadRequestException({ message: 'User not Exist' });
+    const newList = this.listModel({
+      ...body,
+      name: `${body.name}-${formatDate(new Date())}`,
+      kind: 'buy',
+    });
+    return await newList.save();
   }
 
   public async saveModalAddList(body: ListDto, token: AccessTocken) {
@@ -52,6 +62,7 @@ export class ListService {
     if (body.listState) {
       await this.createList({
         name: body.listName,
+        kind: 'wish',
         products: [body.listProduct],
         user: dbUser._id,
       });

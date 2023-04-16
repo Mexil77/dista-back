@@ -21,6 +21,7 @@ import { ListService } from './list.service';
 import { TokenGuard } from 'src/common/guards/token.guard';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { ListDto } from './dto/list.dto';
+import { CreateListDto } from './dto/create-list.dto';
 
 @Controller('api/list')
 @UseFilters(HttpExceptionFilter, MongoExceptionFilter)
@@ -34,6 +35,16 @@ export class ListController {
     @Token() token: AccessTocken,
   ): Promise<PaginateResults<List>> {
     return await this.listService.getAll(request, token);
+  }
+
+  @Post('/buy')
+  @TokenRequirements([TokenTypeEnums.user])
+  @UseGuards(TokenGuard)
+  public async saveBuy(
+    @Body() listDto: CreateListDto,
+    @Token() token: AccessTocken,
+  ): Promise<any> {
+    return await this.listService.saveBuy(listDto, token);
   }
 
   @Post()

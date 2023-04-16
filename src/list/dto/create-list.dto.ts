@@ -11,6 +11,11 @@ export class CreateListDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  readonly kind: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   readonly products?: Product[];
 
   @ApiProperty()
