@@ -7,9 +7,17 @@ import { ProductModule } from './product/product.module';
 import { StoreModule } from './store/store.module';
 import { FormModule } from './form/form.module';
 import { ListModule } from './list/list.module';
+import { ChartModule } from './chart/chart.module';
 
 @Module({
-  imports: [AuthModule, ProductModule, StoreModule, FormModule, ListModule],
+  imports: [
+    AuthModule,
+    ProductModule,
+    StoreModule,
+    FormModule,
+    ListModule,
+    ChartModule,
+  ],
   controllers: [AppController, UserController],
   providers: [AppService],
 })

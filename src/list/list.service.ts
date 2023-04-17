@@ -41,6 +41,7 @@ export class ListService {
     const { query } = request;
     const searchQuery = { user: dbUser._id, kind: 'wish' };
 
+    if (query.kind) searchQuery.kind = query.kind;
     const lists = await this.listModel.paginate({ ...searchQuery }, options);
     return lists;
   }
@@ -50,6 +51,7 @@ export class ListService {
     if (!dbUser) throw new BadRequestException({ message: 'User not Exist' });
     const newList = this.listModel({
       ...body,
+      user: dbUser._id,
       name: `${body.name}-${formatDate(new Date())}`,
       kind: 'buy',
     });
