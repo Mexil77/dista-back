@@ -59,4 +59,44 @@ export class ChartService {
     });
     return resList;
   }
+
+  public async getProductsPerStoreTotalChart(
+    request: any,
+    token: AccessTocken,
+  ): Promise<any> {
+    const { query } = request;
+    const dbUser = await this.userService.findById(token.uid);
+    if (!dbUser) throw new BadRequestException({ message: 'User Not Exist' });
+    const buyLists = await this.listService.getAll(
+      { query: { kind: 'buy' } },
+      token,
+    );
+    const productsList = buyLists.docs.reduce((acc, list) => {
+      list.products.map((product) => {
+        if (product.store.toString() === query.id) {
+          acc.push(product);
+        }
+      });
+      return acc;
+    }, []);
+    const unicProducts = productsList.reduce((acc, product, idx, productL) => {
+      let val = product.id;
+      if (productL.findIndex((product) => product.id === val) === idx)
+        acc.push({ name: product.name, id: product.id });
+      return acc;
+    }, []);
+    const productTotalSpended = unicProducts.map((product) => ({
+      id: product.id,
+      name: product.name,
+      data: [
+        productsList.reduce(
+          (acc, productR) =>
+            product.name === productR.name ? (acc += productR.price) : acc,
+          0,
+        ),
+      ],
+      color: generateRandomColor(),
+    }));
+    return productTotalSpended;
+  }
 }

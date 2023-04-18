@@ -21,4 +21,17 @@ export class ChartController {
   ): Promise<any> {
     return await this.chartService.getStoresTotalsChart(request, token);
   }
+
+  @Get('getProductsPerStoreTotalChart')
+  @TokenRequirements([TokenTypeEnums.user])
+  @UseGuards(TokenGuard)
+  public async getProductsPerStoreTotalChart(
+    @Req() request,
+    @Token() token: AccessTocken,
+  ): Promise<any> {
+    return await this.chartService.getProductsPerStoreTotalChart(
+      request,
+      token,
+    );
+  }
 }
