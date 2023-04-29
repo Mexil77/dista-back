@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsBoolean, IsNumber } from 'class-validator';
+import { IsString, IsBoolean } from 'class-validator';
+import { SlotProductDto } from './slot-product.dto';
 
 export class FormDto {
   @ApiProperty()
@@ -15,22 +16,5 @@ export class FormDto {
   readonly productSelect: boolean;
 
   @ApiProperty()
-  @IsString()
-  readonly productName: string;
-
-  @ApiProperty()
-  @IsNumber()
-  readonly productValue: number;
-
-  @ApiProperty()
-  @IsNumber()
-  readonly productUnits: number;
-
-  @ApiProperty()
-  @IsString()
-  readonly productTypeUnit: string;
-
-  @ApiProperty()
-  @IsString()
-  readonly productDescription: string;
+  readonly products: SlotProductDto[];
 }

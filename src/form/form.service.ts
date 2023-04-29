@@ -38,17 +38,21 @@ export class FormService {
       });
     }
     if (body.productSelect) {
-      const newProduct = await this.productService.createProduct({
-        name: body.productName,
-        price: body.productValue,
-        units: body.productUnits,
-        typeUnit: body.productTypeUnit,
-        description: body.productDescription,
-        user: dbUser._id,
-        store: currentStore._id,
-      });
+      let newProducts = [];
+      for (const product of body.products) {
+        const newProduct = await this.productService.createProduct({
+          name: product.productName,
+          price: product.productValue,
+          units: product.productUnits,
+          typeUnit: product.productTypeUnit,
+          description: product.productDescription,
+          user: dbUser._id,
+          store: currentStore._id,
+        });
+        newProducts.push(newProduct._id);
+      }
       await this.storeService.updateStore(currentStore._id, {
-        products: [newProduct._id],
+        products: newProducts,
       });
     }
   }

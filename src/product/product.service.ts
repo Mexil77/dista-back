@@ -46,13 +46,13 @@ export class ProductService {
   public async createProduct(
     createProductDto: CreateProductDto,
   ): Promise<Product> {
-    const dbProduct = await this.productModel.findOne({
-      name: createProductDto.name,
-      user: createProductDto.user,
-      store: createProductDto.store,
-    });
-    if (dbProduct)
-      throw new BadRequestException({ message: 'Product already added.' });
+    // const dbProduct = await this.productModel.findOne({
+    //   name: createProductDto.name,
+    //   user: createProductDto.user,
+    //   store: createProductDto.store,
+    // });
+    // if (dbProduct)
+    //   throw new BadRequestException({ message: 'Product already added.' });
     const newProduct = this.productModel(createProductDto);
     return await newProduct.save();
   }
