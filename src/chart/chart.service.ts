@@ -38,7 +38,11 @@ export class ChartService {
     const unicStores = storeTotalsList.reduce((acc, store, idx, storeL) => {
       let val = store.store._id;
       if (storeL.findIndex((store) => store.store._id === val) === idx)
-        acc.push({ name: store.store.name, id: store.store._id });
+        acc.push({
+          name: store.store.name,
+          id: store.store._id,
+          color: store.store.color,
+        });
       return acc;
     }, []);
     const resList = unicStores.map((store) => {
@@ -53,8 +57,8 @@ export class ChartService {
       return {
         id: store.id,
         name: store.name,
+        color: store.color,
         data,
-        color: generateRandomColor(),
       };
     });
     return resList;
@@ -82,12 +86,13 @@ export class ChartService {
     const unicProducts = productsList.reduce((acc, product, idx, productL) => {
       let val = product.id;
       if (productL.findIndex((product) => product.id === val) === idx)
-        acc.push({ name: product.name, id: product.id });
+        acc.push({ name: product.name, id: product.id, color: product.color });
       return acc;
     }, []);
     const productTotalSpended = unicProducts.map((product) => ({
       id: product.id,
       name: product.name,
+      color: product.color,
       data: [
         productsList.reduce(
           (acc, productR) =>
@@ -95,7 +100,6 @@ export class ChartService {
           0,
         ),
       ],
-      color: generateRandomColor(),
     }));
     return productTotalSpended;
   }

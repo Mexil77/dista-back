@@ -36,7 +36,6 @@ export class ProductService {
     const { query } = request;
     const searchQuery = { user: dbUser._id };
     if (query.store) searchQuery['store'] = query.store;
-    console.log(query.store);
 
     const products = await this.productModel.paginate(
       { ...searchQuery },
