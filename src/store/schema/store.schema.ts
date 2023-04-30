@@ -14,6 +14,7 @@ export const StoreSchema = new Schema(
   {
     name: { type: String },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
+    color: { type: String },
     products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
     photo: PhotoSchema,
   },

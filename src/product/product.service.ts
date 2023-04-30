@@ -9,6 +9,7 @@ import { Product } from './interface/product.interface';
 import { CreateProductDto } from './dto/create-product.dto';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { UserService } from 'src/user/user.service';
+import { generateRandomColor } from 'src/common/utils/color';
 
 @Injectable()
 export class ProductService {
@@ -35,6 +36,7 @@ export class ProductService {
     const { query } = request;
     const searchQuery = { user: dbUser._id };
     if (query.store) searchQuery['store'] = query.store;
+    console.log(query.store);
 
     const products = await this.productModel.paginate(
       { ...searchQuery },
@@ -46,14 +48,10 @@ export class ProductService {
   public async createProduct(
     createProductDto: CreateProductDto,
   ): Promise<Product> {
-    // const dbProduct = await this.productModel.findOne({
-    //   name: createProductDto.name,
-    //   user: createProductDto.user,
-    //   store: createProductDto.store,
-    // });
-    // if (dbProduct)
-    //   throw new BadRequestException({ message: 'Product already added.' });
-    const newProduct = this.productModel(createProductDto);
+    const newProduct = this.productModel({
+      ...createProductDto,
+      color: generateRandomColor(),
+    });
     return await newProduct.save();
   }
 

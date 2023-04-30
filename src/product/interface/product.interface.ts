@@ -9,6 +9,7 @@ export interface Product extends Document {
   readonly units: number;
   readonly typeUnit: string;
   readonly description: string;
+  readonly color: string;
   readonly user: User;
   readonly store?: Store;
   readonly photo?: any;

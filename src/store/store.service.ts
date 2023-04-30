@@ -9,6 +9,7 @@ import { Store } from './interface/store.interface';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { UserService } from 'src/user/user.service';
+import { generateRandomColor } from 'src/common/utils/color';
 
 @Injectable()
 export class StoreService {
@@ -44,7 +45,10 @@ export class StoreService {
 
     if (dbStore)
       throw new BadRequestException({ message: 'Store already exist' });
-    const newStore = this.storeModel(createStoreDto);
+    const newStore = this.storeModel({
+      ...createStoreDto,
+      color: generateRandomColor(),
+    });
     return await newStore.save();
   }
 
@@ -59,8 +63,14 @@ export class StoreService {
     return await dbStore.save();
   }
 
-  public async findStore(params): Promise<Store> {
+  public async findStore(params: any): Promise<Store> {
     const dbStore = await this.storeModel.findOne(params);
+    if (!dbStore) throw new BadRequestException({ message: 'Store not Found' });
+    return dbStore;
+  }
+
+  public async findById(id: string): Promise<Store> {
+    const dbStore = await this.storeModel.findById(id);
     if (!dbStore) throw new BadRequestException({ message: 'Store not Found' });
     return dbStore;
   }

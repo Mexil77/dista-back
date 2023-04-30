@@ -15,6 +15,7 @@ export const ProductSchema = new Schema(
     units: { type: Number },
     typeUnit: { type: String },
     description: { type: String },
+    color: { type: String },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     store: { type: Schema.Types.ObjectId, ref: 'Store' },
     photo: PhotoSchema,

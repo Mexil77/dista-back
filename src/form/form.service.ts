@@ -32,10 +32,7 @@ export class FormService {
         user: dbUser._id,
       });
     } else {
-      currentStore = await this.storeService.findStore({
-        name: body.storeName,
-        user: dbUser._id,
-      });
+      currentStore = await this.storeService.findById(body.storeName);
     }
     if (body.productSelect) {
       let newProducts = [];
