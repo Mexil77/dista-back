@@ -48,7 +48,7 @@ export class ChartService {
     const resList = unicStores.map((store) => {
       let data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       buyLists.docs.map((buy) => {
-        const idx = new Date(buy.createAt).getMonth();
+        const idx = new Date(buy.registerDate).getMonth();
         let storeTotalFinded = buy.storeTotals.find(
           (storeT) => storeT.store.name === store.name,
         );
