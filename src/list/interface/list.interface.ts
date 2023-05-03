@@ -12,6 +12,7 @@ export interface List extends Document {
   readonly _id: string;
   readonly name: string;
   readonly user: User;
+  readonly registerDate: Date;
   products?: Product[];
   storeTotals: storeTotal[];
   total: number;

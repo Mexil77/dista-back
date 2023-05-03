@@ -12,6 +12,7 @@ export const ListSchema = new Schema(
   {
     name: { type: String },
     kind: { type: String },
+    registerDate: { type: Date },
     products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     storeTotals: [storeTotal],

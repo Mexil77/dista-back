@@ -65,6 +65,7 @@ export class ListService {
       await this.createList({
         name: body.listName,
         kind: 'wish',
+        registerDate: new Date(),
         products: [body.listProduct],
         user: dbUser._id,
       });
