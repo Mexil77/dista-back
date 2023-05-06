@@ -35,7 +35,10 @@ export class ListService {
       limit: 100,
       page: 1,
       sort: { createdAt: -1 },
-      populate: [{ path: 'products' }, { path: 'storeTotals.store' }],
+      populate: [
+        { path: 'products', populate: { path: 'store' } },
+        { path: 'storeTotals.store' },
+      ],
     };
 
     const { query } = request;
