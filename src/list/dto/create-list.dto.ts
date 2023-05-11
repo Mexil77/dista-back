@@ -19,7 +19,6 @@ export class CreateListDto {
   readonly registerDate: Date;
 
   @ApiProperty()
-  @IsString()
   @IsNotEmpty()
   readonly products?: Product[];
 

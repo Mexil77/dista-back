@@ -126,7 +126,7 @@ export class ListService {
     if (dbList)
       throw new BadRequestException({ message: 'List already exist' });
     const totalList = createListDto.products.reduce(
-      (sum, current) => sum + current.price,
+      (sum: number, current: Product) => sum + current.price,
       0,
     );
     const stores = this.spareStoresArray([], createListDto.products);

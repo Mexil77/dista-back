@@ -94,7 +94,7 @@ export class ChartService {
     );
     const productsList = buyLists.docs.reduce((acc: Product[], list: List) => {
       list.products.map((product: Product) => {
-        if (product.store.toString() === query.id) {
+        if (product.store.id === query.id) {
           acc.push(product);
         }
       });

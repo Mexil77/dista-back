@@ -7,6 +7,7 @@ import { TokenTypeEnums } from 'src/token/enums/token-type.enums';
 import { TokenGuard } from 'src/common/guards/token.guard';
 import { Token } from 'src/common/decorators/token.decorator';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
+import { ChartData } from './interface/chart.Interface';
 
 @Controller('api/chart')
 @UseFilters(HttpExceptionFilter, MongoExceptionFilter)
@@ -18,7 +19,7 @@ export class ChartController {
   public async getStoresTotalsChart(
     @Req() request,
     @Token() token: AccessTocken,
-  ): Promise<any> {
+  ): Promise<ChartData[]> {
     return await this.chartService.getStoresTotalsChart(request, token);
   }
 
@@ -28,7 +29,7 @@ export class ChartController {
   public async getProductsPerStoreTotalChart(
     @Req() request,
     @Token() token: AccessTocken,
-  ): Promise<any> {
+  ): Promise<ChartData[]> {
     return await this.chartService.getProductsPerStoreTotalChart(
       request,
       token,

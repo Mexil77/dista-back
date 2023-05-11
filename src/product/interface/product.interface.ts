@@ -7,6 +7,8 @@ export interface Product extends Document {
   readonly name: string;
   readonly price: number;
   readonly units: number;
+  readonly discountRate?: number;
+  readonly quantity?: number;
   readonly typeUnit: string;
   readonly description: string;
   readonly color: string;
