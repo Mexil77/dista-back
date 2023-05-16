@@ -10,6 +10,14 @@ const PhotoSchema = new Schema(
   },
 );
 
+export const storeTotal = new Schema(
+  {
+    store: { type: Schema.Types.ObjectId, ref: 'Store' },
+    total: { type: Number },
+  },
+  { _id: false },
+);
+
 export const StoreSchema = new Schema(
   {
     name: { type: String },

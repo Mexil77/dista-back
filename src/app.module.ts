@@ -8,6 +8,7 @@ import { StoreModule } from './store/store.module';
 import { FormModule } from './form/form.module';
 import { ListModule } from './list/list.module';
 import { ChartModule } from './chart/chart.module';
+import { TicketModule } from './ticket/ticket.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ChartModule } from './chart/chart.module';
     FormModule,
     ListModule,
     ChartModule,
+    TicketModule,
   ],
   controllers: [AppController, UserController],
   providers: [AppService],

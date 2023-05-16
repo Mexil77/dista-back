@@ -9,8 +9,8 @@ import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { UserService } from 'src/user/user.service';
 import { ChartData } from './interface/chart.Interface';
 import { Product } from 'src/product/interface/product.interface';
-import { List, StoreTotal } from 'src/list/interface/list.interface';
-import { Store } from 'src/store/interface/store.interface';
+import { List } from 'src/list/interface/list.interface';
+import { StoreTotal } from 'src/store/interface/store.interface';
 
 @Injectable()
 export class ChartService {

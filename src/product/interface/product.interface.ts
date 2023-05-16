@@ -2,6 +2,12 @@ import { Document } from 'mongoose';
 import { Store } from 'src/store/interface/store.interface';
 import { User } from 'src/user/interface/user.interface';
 
+export interface ProductTiket {
+  product: Product;
+  discountRate: number;
+  quantity: number;
+}
+
 export interface Product extends Document {
   readonly _id: string;
   readonly name: string;
