@@ -7,6 +7,7 @@ export interface Ticket extends Document {
   readonly _id: string;
   readonly user: User;
   readonly registerDate: Date;
+  readonly discountRate: number;
   products?: ProductTiket[];
   storeTotals: StoreTotal[];
   total: number;

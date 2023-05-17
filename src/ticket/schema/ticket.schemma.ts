@@ -1,21 +1,14 @@
 import { Schema } from 'mongoose';
 
 import { storeTotal } from 'src/store/schema/store.schema';
-
-const productTicket = new Schema(
-  {
-    product: { type: Schema.Types.ObjectId, ref: 'Product' },
-    discountRate: { type: Number },
-    quantity: { type: Number },
-  },
-  { _id: false },
-);
+import { productTicket } from 'src/product/schemas/product.schema';
 
 export const TicketSchema = new Schema(
   {
     registerDate: { type: Date },
     products: [productTicket],
     user: { type: Schema.Types.ObjectId, ret: 'User' },
+    discountRate: { type: Number },
     storeTotals: [storeTotal],
     total: { type: Number },
   },

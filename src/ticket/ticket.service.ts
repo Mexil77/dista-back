@@ -44,4 +44,14 @@ export class Ticketservise {
     );
     return tickets;
   }
+
+  public async saveBuy(body: any, token: AccessTocken) {
+    const dbUser = await this.userService.findById(token.uid);
+    if (!dbUser) throw new BadRequestException({ message: 'User not Exist' });
+    const newList = this.ticketModel({
+      ...body,
+      user: dbUser._id,
+    });
+    return await newList.save();
+  }
 }

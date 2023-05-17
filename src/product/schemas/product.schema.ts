@@ -8,6 +8,15 @@ const PhotoSchema = new Schema(
   { _id: false },
 );
 
+export const productTicket = new Schema(
+  {
+    product: { type: Schema.Types.ObjectId, ref: 'Product' },
+    discountRate: { type: Number },
+    quantity: { type: Number },
+  },
+  { _id: false },
+);
+
 export const ProductSchema = new Schema(
   {
     name: { type: String },

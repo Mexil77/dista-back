@@ -34,4 +34,14 @@ export class TicketController {
   ): Promise<PaginateResults<Ticket>> {
     return await this.ticketService.getAll(request, token);
   }
+
+  @Post('/buy')
+  @TokenRequirements([TokenTypeEnums.user])
+  @UseGuards(TokenGuard)
+  public async saveBuy(
+    @Body() listDto: any,
+    @Token() token: AccessTocken,
+  ): Promise<any> {
+    return await this.ticketService.saveBuy(listDto, token);
+  }
 }
