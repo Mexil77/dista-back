@@ -13,6 +13,7 @@ export const productTicket = new Schema(
     product: { type: Schema.Types.ObjectId, ref: 'Product' },
     discountRate: { type: Number },
     quantity: { type: Number },
+    totalTicketProduct: { type: Number },
   },
   { _id: false },
 );

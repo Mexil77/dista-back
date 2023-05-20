@@ -39,9 +39,9 @@ export class TicketController {
   @TokenRequirements([TokenTypeEnums.user])
   @UseGuards(TokenGuard)
   public async saveBuy(
-    @Body() listDto: any,
+    @Body() ticketDto: any,
     @Token() token: AccessTocken,
   ): Promise<any> {
-    return await this.ticketService.saveBuy(listDto, token);
+    return await this.ticketService.saveBuy(ticketDto, token);
   }
 }
