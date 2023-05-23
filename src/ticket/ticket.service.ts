@@ -10,7 +10,7 @@ import { UserService } from 'src/user/user.service';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 
 @Injectable()
-export class Ticketservise {
+export class TicketServise {
   constructor(
     @Inject('TicketModelToken')
     public readonly ticketModel: PaginateModel<Ticket>,

@@ -4,13 +4,18 @@ import {
   forwardRef,
   BadRequestException,
 } from '@nestjs/common';
-import { ListService } from 'src/list/list.service';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { UserService } from 'src/user/user.service';
+import { ListService } from 'src/list/list.service';
+import { TicketServise } from 'src/ticket/ticket.service';
 import { ChartData } from './interface/chart.Interface';
-import { Product } from 'src/product/interface/product.interface';
+import {
+  Product,
+  ProductTicket,
+} from 'src/product/interface/product.interface';
 import { List } from 'src/list/interface/list.interface';
 import { StoreTotal } from 'src/store/interface/store.interface';
+import { Ticket } from 'src/ticket/interface/ticket.interface';
 
 @Injectable()
 export class ChartService {
@@ -19,6 +24,8 @@ export class ChartService {
     private readonly userService: UserService,
     @Inject(forwardRef(() => ListService))
     private readonly listService: ListService,
+    @Inject(forwardRef(() => TicketServise))
+    private readonly ticketServise: TicketServise,
   ) {}
 
   public async getStoresTotalsChart(
@@ -27,13 +34,10 @@ export class ChartService {
   ): Promise<ChartData[]> {
     const dbUser = await this.userService.findById(token.uid);
     if (!dbUser) throw new BadRequestException({ message: 'User Not Exist' });
-    const buyLists = await this.listService.getAll(
-      { query: { kind: 'buy' } },
-      token,
-    );
-    const storeTotalsList = buyLists.docs.reduce(
-      (acc: StoreTotal[], list: List) => {
-        list.storeTotals.map((storeTotal: StoreTotal) => {
+    const tickets = await this.ticketServise.getAll({}, token);
+    const storeTotalsList = tickets.docs.reduce(
+      (acc: StoreTotal[], ticket: Ticket) => {
+        ticket.storeTotals.map((storeTotal: StoreTotal) => {
           acc.push(storeTotal);
         });
         return acc;
@@ -64,9 +68,9 @@ export class ChartService {
     );
     const chartData = filteredChartData.map((store: ChartData) => {
       let data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      buyLists.docs.map((buy: List) => {
-        const idx = new Date(buy.registerDate).getMonth();
-        let storeTotalFinded = buy.storeTotals.find(
+      tickets.docs.map((ticket: Ticket) => {
+        const idx = new Date(ticket.registerDate).getMonth();
+        let storeTotalFinded = ticket.storeTotals.find(
           (storeT) => storeT.store.name === store.name,
         );
         if (storeTotalFinded) data[idx] += storeTotalFinded.total;
@@ -88,31 +92,35 @@ export class ChartService {
     const { query } = request;
     const dbUser = await this.userService.findById(token.uid);
     if (!dbUser) throw new BadRequestException({ message: 'User Not Exist' });
-    const buyLists = await this.listService.getAll(
-      { query: { kind: 'buy' } },
-      token,
+    const tickets = await this.ticketServise.getAll({}, token);
+    const productsTicketList = tickets.docs.reduce(
+      (acc: ProductTicket[], ticket: Ticket) => {
+        ticket.products.map((productTicket: ProductTicket) => {
+          if (productTicket.product.store.id === query.id) {
+            acc.push(productTicket);
+          }
+        });
+        return acc;
+      },
+      [],
     );
-    const productsList = buyLists.docs.reduce((acc: Product[], list: List) => {
-      list.products.map((product: Product) => {
-        if (product.store.id === query.id) {
-          acc.push(product);
-        }
-      });
-      return acc;
-    }, []);
-    const filteredChartData = productsList.reduce(
+    const filteredChartData = productsTicketList.reduce(
       (
         acc: ChartData[],
-        product: Product,
+        productTicket: ProductTicket,
         idx: number,
-        productL: Product[],
+        productTicketL: ProductTicket[],
       ) => {
-        let val = product.id;
-        if (productL.findIndex((product) => product.id === val) === idx)
+        let val = productTicket.product.id;
+        if (
+          productTicketL.findIndex(
+            (productTicket) => productTicket.product.id === val,
+          ) === idx
+        )
           acc.push({
-            name: product.name,
-            id: product.id,
-            color: product.color,
+            name: productTicket.product.name,
+            id: productTicket.product.id,
+            color: productTicket.product.color,
           });
         return acc;
       },
@@ -123,9 +131,11 @@ export class ChartService {
       name: product.name,
       color: product.color,
       data: [
-        productsList.reduce(
-          (acc: number, productR: Product) =>
-            product.name === productR.name ? (acc += productR.price) : acc,
+        productsTicketList.reduce(
+          (acc: number, productTicketR: ProductTicket) =>
+            product.name === productTicketR.product.name
+              ? (acc += productTicketR.totalTicketProduct)
+              : acc,
           0,
         ),
       ],

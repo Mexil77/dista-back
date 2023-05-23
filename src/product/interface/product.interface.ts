@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 import { Store } from 'src/store/interface/store.interface';
 import { User } from 'src/user/interface/user.interface';
 
-export interface ProductTiket {
+export interface ProductTicket {
   product: Product;
   discountRate: number;
   quantity: number;

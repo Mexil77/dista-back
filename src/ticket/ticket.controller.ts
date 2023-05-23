@@ -17,14 +17,14 @@ import { PaginateResults } from 'mongoose-paginate';
 import { Ticket } from './interface/ticket.interface';
 import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
 import { MongoExceptionFilter } from 'src/common/filters/mongo-exeption.filter';
-import { Ticketservise } from './ticket.service';
+import { TicketServise } from './ticket.service';
 import { TokenGuard } from 'src/common/guards/token.guard';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 
 @Controller('api/ticket')
 @UseFilters(HttpExceptionFilter, MongoExceptionFilter)
 export class TicketController {
-  constructor(private readonly ticketService: Ticketservise) {}
+  constructor(private readonly ticketService: TicketServise) {}
   @Get()
   @TokenRequirements([TokenTypeEnums.user])
   @UseGuards(TokenGuard)
