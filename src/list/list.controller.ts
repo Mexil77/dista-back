@@ -86,4 +86,14 @@ export class ListController {
   ): Promise<any> {
     return await this.listService.deleteProductList(param, token);
   }
+
+  @Put()
+  @TokenRequirements([TokenTypeEnums.user])
+  @UseGuards(TokenGuard)
+  public async deleteProductToAllLists(
+    @Body() body: any,
+    @Token() token: AccessTocken,
+  ): Promise<any> {
+    return await this.listService.deleteProductToAllLists(body, token);
+  }
 }

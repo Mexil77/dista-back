@@ -45,7 +45,7 @@ export class ProductService {
     return products;
   }
 
-  public async delete(productId): Promise<Product> {
+  public async delete(productId: string): Promise<Product> {
     const product = await this.getCompletePopulatedProductById(productId);
     if (!product) {
       throw new BadRequestException();

@@ -32,7 +32,7 @@ export class ProductController {
     return await this.productService.getAll(request, token);
   }
 
-  @Delete()
+  @Delete(':productId')
   @TokenRequirements([TokenTypeEnums.user])
   public async delete(@Param('productId') productId: string): Promise<Product> {
     return await this.productService.delete(productId);

@@ -13,6 +13,8 @@ import { UserService } from 'src/user/user.service';
 import { ProductService } from 'src/product/product.service';
 import { CreateListDto } from './dto/create-list.dto';
 import { formatDate } from 'src/common/utils/date';
+import { Store, StoreTotal } from 'src/store/interface/store.interface';
+import { formatPrice } from 'src/common/utils/number';
 
 @Injectable()
 export class ListService {
@@ -212,5 +214,54 @@ export class ListService {
         { path: 'products' },
         { path: 'storeTotals.store' },
       ]);
+  }
+
+  public async deleteProductToAllLists(
+    body: any,
+    token: AccessTocken,
+  ): Promise<any> {
+    const listsList = await this.getAll({ query: {} }, token);
+
+    for (const list of listsList.docs) {
+      if (
+        list.products.find((product: Product) => product.id === body.productId)
+      ) {
+        const newProducts = list.products.filter(
+          (product: Product) => product.id !== body.productId,
+        );
+        list.products = newProducts;
+        list.storeTotals = this.makeStoreTotals(newProducts);
+        list.total = this.calculateTotal(list.storeTotals);
+        await list.save();
+      }
+    }
+  }
+
+  public makeStoreTotals(products: Product[]): StoreTotal[] {
+    let listStores = products.reduce((acc, product, idx, listP) => {
+      let val = product.store._id;
+      if (listP.findIndex((product) => product.store._id === val) === idx)
+        acc.push(product.store);
+      return acc;
+    }, [] as Store[]);
+    const listStoreTotals = listStores.map((store) => {
+      let val = store._id;
+      const total = products.reduce((acc, product) => {
+        if (product.store._id === val) acc += product.price;
+        return formatPrice(acc);
+      }, 0);
+      return {
+        store,
+        total,
+      };
+    });
+    return listStoreTotals;
+  }
+
+  public calculateTotal(storeTotals: StoreTotal[]): number {
+    return storeTotals.reduce(
+      (total, store: StoreTotal) => (total += store.total),
+      0,
+    );
   }
 }
