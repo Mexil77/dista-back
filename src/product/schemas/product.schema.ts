@@ -1,4 +1,8 @@
 import { Schema } from 'mongoose';
+import {
+  ProductStatusEnum,
+  ProductStatusEnumAsArray,
+} from '../enums/product-status.enum';
 
 const PhotoSchema = new Schema(
   {
@@ -20,6 +24,11 @@ export const productTicket = new Schema(
 
 export const ProductSchema = new Schema(
   {
+    status: {
+      type: String,
+      enum: ProductStatusEnumAsArray,
+      default: ProductStatusEnum.active,
+    },
     name: { type: String },
     price: { type: Number },
     units: { type: Number },

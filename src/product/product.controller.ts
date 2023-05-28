@@ -1,4 +1,12 @@
-import { UseGuards, Controller, UseFilters, Get, Req } from '@nestjs/common';
+import {
+  UseGuards,
+  Controller,
+  UseFilters,
+  Get,
+  Req,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { TokenRequirements } from 'src/common/decorators/tocken-requirements.decorator';
 import { Token } from 'src/common/decorators/token.decorator';
 import { TokenTypeEnums } from 'src/token/enums/token-type.enums';
@@ -22,5 +30,11 @@ export class ProductController {
     @Token() token: AccessTocken,
   ): Promise<PaginateResult<Product>> {
     return await this.productService.getAll(request, token);
+  }
+
+  @Delete()
+  @TokenRequirements([TokenTypeEnums.user])
+  public async delete(@Param('productId') productId: string): Promise<Product> {
+    return await this.productService.delete(productId);
   }
 }

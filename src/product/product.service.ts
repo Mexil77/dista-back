@@ -10,6 +10,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { AccessTocken } from 'src/token/interface/access-token.interface';
 import { UserService } from 'src/user/user.service';
 import { generateRandomColor } from 'src/common/utils/color';
+import { ProductStatusEnum } from './enums/product-status.enum';
 
 @Injectable()
 export class ProductService {
@@ -34,7 +35,7 @@ export class ProductService {
     };
 
     const { query } = request;
-    const searchQuery = { user: dbUser._id };
+    const searchQuery = { user: dbUser._id, status: 'active' };
     if (query.store) searchQuery['store'] = query.store;
 
     const products = await this.productModel.paginate(
@@ -42,6 +43,16 @@ export class ProductService {
       options,
     );
     return products;
+  }
+
+  public async delete(productId): Promise<Product> {
+    const product = await this.getCompletePopulatedProductById(productId);
+    if (!product) {
+      throw new BadRequestException();
+    }
+    product.set({ status: ProductStatusEnum.deleted });
+    await product.save();
+    return product;
   }
 
   public async createProduct(
