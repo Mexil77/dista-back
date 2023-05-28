@@ -45,6 +45,23 @@ export class ProductService {
     return products;
   }
 
+  public async updateProduct(productId: string, body: any): Promise<Product> {
+    const productDb = await this.productModel.findById(productId);
+    if (!productDb)
+      throw new BadRequestException({ message: 'Product Not Exist' });
+    const { data } = body;
+    if (data.name) productDb.name = data.name;
+    if (data.price) productDb.price = data.price;
+    if (data.units) productDb.units = data.units;
+    if (data.typeUnit) productDb.typeUnit = data.typeUnit;
+    if (data.description) productDb.description = data.description;
+    if (data.color) productDb.color = data.color;
+    if (data.store) productDb.store = data.store;
+    if (data.photo) productDb.photo = data.photo;
+    await productDb.save();
+    return productDb;
+  }
+
   public async delete(productId: string): Promise<Product> {
     const product = await this.getCompletePopulatedProductById(productId);
     if (!product) {

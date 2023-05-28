@@ -96,4 +96,14 @@ export class ListController {
   ): Promise<any> {
     return await this.listService.deleteProductToAllLists(body, token);
   }
+
+  @Post('/totals')
+  @TokenRequirements([TokenTypeEnums.user])
+  @UseGuards(TokenGuard)
+  public async updateTotalsList(
+    @Token() token: AccessTocken,
+    @Body() body: any,
+  ) {
+    return await this.listService.recalculateAllTotalsLists(token);
+  }
 }

@@ -6,6 +6,8 @@ import {
   Req,
   Delete,
   Param,
+  Put,
+  Body,
 } from '@nestjs/common';
 import { TokenRequirements } from 'src/common/decorators/tocken-requirements.decorator';
 import { Token } from 'src/common/decorators/token.decorator';
@@ -30,6 +32,15 @@ export class ProductController {
     @Token() token: AccessTocken,
   ): Promise<PaginateResult<Product>> {
     return await this.productService.getAll(request, token);
+  }
+
+  @Put(':productId')
+  @TokenRequirements([TokenTypeEnums.user])
+  public async updateProduct(
+    @Param('productId') productId: string,
+    @Body() body: any,
+  ): Promise<Product> {
+    return await this.productService.updateProduct(productId, body);
   }
 
   @Delete(':productId')

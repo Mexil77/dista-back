@@ -264,4 +264,14 @@ export class ListService {
       0,
     );
   }
+
+  public async recalculateAllTotalsLists(token: AccessTocken) {
+    const listsList = await this.getAll({ query: {} }, token);
+
+    for (const list of listsList.docs) {
+      list.storeTotals = this.makeStoreTotals(list.products);
+      list.total = this.calculateTotal(list.storeTotals);
+      await list.save();
+    }
+  }
 }
