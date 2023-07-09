@@ -3,7 +3,8 @@ import { ConfigService } from '../config/config.service';
 const configService = new ConfigService('.env');
 
 export const DatabaseConstants = {
-  uri: configService.get('MONGO_URI'),
+  // uri: configService.get('MONGO_URI'),
+  uri: process.env.MONGO_URI,
   encryptot: {
     key: 'ZhsgKYjI5WE4fbuOOyiCSkwqObGpnmaJ',
   },
